@@ -1,19 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: nginx-deploy-2
-  labels:
-    app: nginx
+  name: my-first-app
+  namespace: argocd
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx-container
-        image: nginx:latest
+  project: default
+  source:
+    repoURL: 'https://github.com/crestrepop81/ArgoCD_first.git'
+    targetRevision: HEAD
+    path: .
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
