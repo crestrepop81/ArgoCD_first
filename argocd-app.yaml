@@ -1,23 +1,19 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: my-first-app
-  namespace: argocd  # ArgoCD watches this namespace for Application CRs
+  name: nginx-deploy-2
+  labels:
+    app: nginx
 spec:
-  project: default
-
-  source:
-    repoURL: 'https://github.com/crestrepop81/ArgoCD_first.git'
-    targetRevision: HEAD
-    path: .  # assuming the manifests are in the root directory
-
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: default  # change if your app should deploy to a different namespace
-
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:latest
