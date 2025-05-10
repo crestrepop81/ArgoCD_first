@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-first-app
+  namespace: argocd  # ArgoCD watches this namespace for Application CRs
+spec:
+  project: default
+
+  source:
+    repoURL: 'https://github.com/crestrepop81/ArgoCD_first.git'  # Replace with your repo URL
+    targetRevision: HEAD  # or use a branch/tag/commit
+    path: .
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default  # Namespace where the app will be deployed
+
+  syncPolicy:
+    automated:
+      prune: true      # delete resources no longer defined
+      selfHeal: true   # automatically apply drift correction
+    syncOptions:
+    - CreateNamespace=true  # optionally create the namespace if it doesn't exist
